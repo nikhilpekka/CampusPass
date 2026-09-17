@@ -2,10 +2,9 @@
 // Every function returns parsed JSON and throws an Error with the server's
 // message on failure, so callers can just try/catch.
 
-const BASE_URL = (
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD ? "https://campuspass-backend-lg62.onrender.com/api" : "/api")
-).replace(/\/$/, "");
+const BASE_URL = import.meta.env.PROD
+  ? "https://campuspass-backend-lg62.onrender.com/api"
+  : "/api";
 
 function getToken() {
   return localStorage.getItem("campuspass_token");
