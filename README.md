@@ -52,13 +52,12 @@ npm run dev    # starts the API on http://localhost:5000
 
 Also set `ORGANIZER_ACCESS_CODE` and `GATEKEEPER_ACCESS_CODE` in `.env` — these gate who can register as those roles (see [Roles & Access](#roles--access)).
 
-**Demo accounts** created by `npm run seed` (password for all: `Password123!`):
 
-| Role       | Email                   |
-|------------|--------------------------|
-| Organizer  | organizer@campus.edu    |
-| Gatekeeper | gatekeeper@campus.edu   |
-| Attendee   | attendee@campus.edu     |
+| Role       |
+|------------|
+| Organizer  |
+| Gatekeeper | 
+| Attendee   |
 
 ### 2. Frontend
 
