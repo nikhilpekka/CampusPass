@@ -1,0 +1,748 @@
+/* =========================================================================
+   CampusPass — Design System
+   Theme: light, card-based dashboard — white panels on a soft neutral
+   canvas, subtle shadows instead of borders, a green "valid pass" accent
+   for primary actions and a blue accent reserved for scan/verify moments.
+   Sections below, in order: tokens -> base -> layout -> panel components
+   -> forms -> buttons -> badges/status -> hero -> pass card -> utilities
+   -> tiers -> scanner -> QR overlay -> organizer layout.
+   ========================================================================= */
+
+/* ---------- 1. Design tokens ------------------------------------------- */
+:root {
+  /* Color */
+  --bg-base: #f1f4f7;
+  --bg-panel: #ffffff;
+  --bg-panel-raised: #f7f9fb;
+  --card-border: #e3e8ee;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-md: 0 4px 14px rgba(16, 24, 40, 0.07), 0 1px 2px rgba(16, 24, 40, 0.04);
+
+  --accent: #16a34a;
+  /* valid pass green — primary actions */
+  --accent-strong: #15803d;
+  /* hover / highlighted link text */
+  --accent-soft: #dcfce7;
+  /* tinted backgrounds (active nav, success badges) */
+  --verify: #2563eb;
+  /* scan / QR verification moments */
+  --verify-soft: #dbeafe;
+  --success: #16a34a;
+  --success-soft: #dcfce7;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475467;
+  --text-muted: #667085;
+
+  /* Type */
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  /* Layout */
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --sidebar-width: 220px;
+  --content-max: 1160px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- 2. Base ------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Used for "Log in" / "Register" style call-to-action links inside body
+   text, where color alone (on a light background) isn't always enough
+   contrast/emphasis to read as clickable - weight + underline make it
+   unambiguous regardless of color vision. */
+.link-highlight {
+  color: var(--accent-strong);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link-highlight:hover {
+  color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- 3. App shell layout ----------------------------------------- */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  padding: 22px;
+  gap: 22px;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  background: var(--bg-panel);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  height: fit-content;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+}
+
+.sidebar-brand-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--text-primary);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-link {
+  padding: 11px 14px;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out);
+}
+
+.sidebar-link:hover {
+  background: var(--bg-panel-raised);
+  color: var(--text-primary);
+}
+
+.sidebar-link.active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--card-border);
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-logout {
+  width: 100%;
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  font-size: 24px;
+}
+
+.content-max {
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+@media (max-width: 860px) {
+  .app-shell {
+    flex-direction: column;
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 14px;
+    overflow-x: auto;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-shrink: 0;
+  }
+
+  /* Logout stays reachable on mobile instead of disappearing entirely -
+     it joins the same horizontal scroll row as the nav links, just
+     without the name/role block (not enough width for both). */
+  .sidebar-footer {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    flex-direction: row;
+    flex-shrink: 0;
+  }
+
+  .sidebar-user-info {
+    display: none;
+  }
+
+  .sidebar-logout {
+    width: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ---------- 4. Panel components ----------------------------------------- */
+.glass {
+  background: var(--bg-panel);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.glass-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 22px;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.glass-card--interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.grid-cards {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* ---------- 5. Forms ------------------------------------------------------ */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 11px 15px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  transition: border-color 0.15s var(--ease-out), background 0.15s var(--ease-out);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.field textarea {
+  border-radius: 14px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field select option {
+  background: var(--bg-panel);
+  color: var(--text-primary);
+}
+
+.field-row {
+  display: flex;
+  gap: 14px;
+}
+
+.field-row>* {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 420px) {
+  .field-row {
+    flex-direction: column;
+  }
+}
+
+.form-error {
+  background: var(--danger-soft);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  color: var(--danger);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 13.5px;
+}
+
+/* Panel used on Register for the organizer/gatekeeper access-code toggle */
+.elevated-access {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---------- 6. Buttons ---------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s var(--ease-out), filter 0.15s var(--ease-out), background 0.15s var(--ease-out), box-shadow 0.15s var(--ease-out);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgba(22, 163, 74, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+}
+
+.btn-ghost {
+  background: var(--bg-panel);
+  border-color: var(--card-border);
+  color: var(--text-primary);
+}
+
+.btn-ghost:hover {
+  background: var(--bg-panel-raised);
+}
+
+.btn-verify {
+  background: var(--verify);
+  color: #ffffff;
+}
+
+.btn-verify:hover {
+  filter: brightness(1.08);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ---------- 7. Badges & scan states --------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.badge-success {
+  background: var(--success-soft);
+  color: var(--accent-strong);
+}
+
+.badge-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.badge-neutral {
+  background: var(--bg-panel-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--card-border);
+}
+
+.scan-result {
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  text-align: center;
+  border: 1px solid var(--card-border);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-sm);
+  animation: scan-pop 0.35s var(--ease-out);
+}
+
+.scan-result--valid {
+  border-color: var(--accent);
+  background: var(--success-soft);
+}
+
+.scan-result--used {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.scan-result--invalid {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
+@keyframes scan-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- 8. Landing page hero ------------------------------------------ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 72px 48px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-gate {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* A single sweeping scan-line — the one orchestrated motion on the page */
+.hero-gate::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 180px;
+  background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+  animation: sweep 5s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0% {
+    left: -20%;
+  }
+
+  50% {
+    left: 100%;
+  }
+
+  100% {
+    left: -20%;
+  }
+}
+
+.hero-content {
+  position: relative;
+  max-width: 620px;
+}
+
+.hero-eyebrow {
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 16px;
+  margin-bottom: 28px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 44px 24px;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+  }
+}
+
+/* ---------- 9. QR / pass card ---------------------------------------------- */
+.pass-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 26px;
+  text-align: center;
+}
+
+.pass-card img {
+  width: 180px;
+  height: 180px;
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid var(--card-border);
+}
+
+.pass-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ---------- 10. Utilities ----------------------------------------------- */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-sm {
+  font-size: 13px;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+.empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* ---------- 11. Ticket tiers (organizer create-event form) --------------- */
+.tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tier-card {
+  background: var(--bg-panel-raised);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tier-remove {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.tier-remove:hover {
+  text-decoration: underline;
+}
+
+/* ---------- 12. Gate scanner layout --------------------------------------- */
+.scanner-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (min-width: 760px) {
+  .scanner-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.recent-scan-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--card-border);
+  font-size: 13.5px;
+}
+
+.recent-scan-item:last-child {
+  border-bottom: none;
+}
+
+/* ---------- 13. Full-screen QR overlay ------------------------------------ */
+.qr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(15, 23, 42, 0.88);
+  animation: scan-pop 0.2s var(--ease-out);
+}
+
+.qr-overlay img {
+  width: min(320px, 78vw);
+  height: min(320px, 78vw);
+  border-radius: 18px;
+  background: #fff;
+  padding: 16px;
+}
+
+.qr-overlay-hint {
+  color: #ffffff;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* ---------- 14. Organizer dashboard layout --------------------------------- */
+.organizer-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 820px) {
+  .organizer-layout {
+    grid-template-columns: minmax(240px, 320px) 1fr;
+  }
+}
